@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href="data:," />
-    <title>日本小店演示版</title>
+    <title>小虎小店（演示版）</title>
     <style>
       :root {
         --bg: #eef6fb;
@@ -68,6 +68,10 @@
       }
       .notice-bar b { color: var(--accent); font-weight: 600; }
       .notice-bar .sep { margin: 0 6px; opacity: .5; }
+      .notice-bar button {
+        background: none; border: 0; color: var(--brand-deep);
+        font-size: 12.5px; font-weight: 700; text-decoration: underline; padding: 0;
+      }
 
       /* ---------- 页眉 ---------- */
       header.site {
@@ -82,7 +86,6 @@
         padding: 10px 12px;
       }
       .logo { font-size: 20px; font-weight: 800; letter-spacing: 2px; line-height: 1; white-space: nowrap; }
-      .logo .flame { color: #ffd9d4; }
       .demo-tag {
         background: var(--accent); color: #fff;
         font-size: 11px; font-weight: 700;
@@ -117,6 +120,8 @@
         padding: 14px; margin-top: 12px;
       }
       .card h2 { font-size: 17px; margin: 0 0 10px; }
+      .card h3 { font-size: 15px; margin: 16px 0 6px; }
+      .card h3:first-child { margin-top: 0; }
       .muted { color: var(--ink-2); font-size: 13px; }
       .btn {
         display: inline-flex; align-items: center; justify-content: center; gap: 6px;
@@ -148,9 +153,28 @@
         background: var(--warn-bg); color: var(--warn-ink);
         border-radius: 9px; padding: 9px 12px; font-size: 12.5px; margin-top: 10px;
       }
+      .rule-list { margin: 0; padding-left: 20px; font-size: 14px; }
+      .rule-list li { margin: 5px 0; }
+
+      /* ---------- 套餐入口 ---------- */
+      .bundle-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+      .bundle-entry {
+        border: 0; border-radius: var(--radius); color: #fff; text-align: left;
+        padding: 16px 14px; box-shadow: var(--shadow);
+        display: flex; flex-direction: column; gap: 3px;
+      }
+      .bundle-entry .b-title { font-size: 17px; font-weight: 800; letter-spacing: 1px; }
+      .bundle-entry .b-sub { font-size: 12px; opacity: .88; }
+      .bundle-entry:active { opacity: .85; }
+      .bundle-detail { border: 1px solid var(--brand); }
+      .bundle-detail h2 { display: flex; justify-content: space-between; align-items: center; }
+      .bundle-detail .x { background: none; border: 0; color: var(--ink-2); font-size: 18px; padding: 2px 6px; }
+      .bundle-line { display: flex; justify-content: space-between; font-size: 14px; padding: 5px 0; border-bottom: 1px dashed var(--line); }
+      .bundle-line:last-of-type { border-bottom: 0; }
 
       /* ---------- 分类 ---------- */
-      .cats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+      .cats-label { font-size: 12px; color: var(--ink-2); margin-top: 14px; }
+      .cats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
       .cat {
         border: 1px solid var(--line); background: var(--surface);
         color: var(--ink); border-radius: 999px; padding: 7px 14px; font-size: 14px;
@@ -166,32 +190,43 @@
         display: flex; flex-direction: column;
       }
       .prod-art {
-        height: 92px; display: flex; flex-direction: column;
+        height: 84px; display: flex; flex-direction: column;
         align-items: center; justify-content: center; gap: 2px;
         color: #fff; text-align: center; padding: 8px;
       }
       .prod-art .brand-name { font-size: 19px; font-weight: 800; letter-spacing: 3px; }
       .prod-art .art-sub { font-size: 11px; opacity: .85; letter-spacing: 1px; }
-      .prod-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
-      .prod-name { font-size: 14.5px; font-weight: 600; line-height: 1.4; }
-      .prod-spec { font-size: 12px; color: var(--ink-2); }
-      .limit-tag {
-        align-self: flex-start; font-size: 11px; color: var(--accent);
-        border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px; line-height: 1.7;
+      .prod-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 3px; flex: 1; }
+      .sku-row { display: flex; align-items: center; gap: 6px; }
+      .sku { font-size: 11.5px; color: var(--ink-2); letter-spacing: .5px; }
+      .new-tag {
+        font-size: 10.5px; font-weight: 700; color: #fff; background: var(--accent);
+        border-radius: 3px; padding: 1px 5px; line-height: 1.5;
       }
-      .prod-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; padding-top: 6px; }
-      .price { color: var(--accent); font-weight: 700; font-size: 16px; }
-      .price small { font-size: 11px; font-weight: 400; color: var(--ink-2); }
+      .prod-name { font-size: 14.5px; font-weight: 600; line-height: 1.4; }
+      .prod-jp { font-size: 12px; color: var(--ink-2); line-height: 1.35; }
+      .prod-cat { font-size: 11.5px; color: var(--brand-deep); }
+      .prod-note { font-size: 12px; color: var(--warn-ink); }
+      .prod-rule { font-size: 11.5px; color: var(--ink-2); line-height: 1.45; }
+      .prod-foot { margin-top: auto; padding-top: 8px; }
+      .price { color: var(--accent); font-weight: 700; font-size: 17px; }
+      .price small { font-size: 12px; font-weight: 400; color: var(--ink-2); }
+      .prod-actions { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+      .qty-step {
+        display: inline-flex; align-items: center; border: 1px solid var(--line);
+        border-radius: 8px; overflow: hidden; flex: none;
+      }
+      .qty-step button { width: 28px; height: 32px; border: 0; background: var(--surface-2); color: var(--ink); font-size: 15px; }
+      .qty-step span { min-width: 28px; text-align: center; font-weight: 600; font-size: 14px; }
       .add-btn {
-        background: var(--brand-deep); color: #fff; border: 0;
-        border-radius: 8px; padding: 7px 13px; font-size: 13.5px; font-weight: 600;
+        flex: 1; background: var(--brand-deep); color: #fff; border: 0;
+        border-radius: 8px; padding: 8px 6px; font-size: 13.5px; font-weight: 600;
       }
 
       /* ---------- 购物车 ---------- */
-      .cart-line {
-        display: flex; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line);
-      }
+      .cart-line { padding: 12px 0; border-bottom: 1px solid var(--line); }
       .cart-line:last-child { border-bottom: 0; }
+      .cart-line-top { display: flex; gap: 10px; }
       .thumb {
         width: 52px; height: 52px; border-radius: 8px; flex: none;
         display: grid; place-items: center; color: #fff;
@@ -199,21 +234,38 @@
       }
       .cart-main { flex: 1; min-width: 0; }
       .cart-name { font-size: 14px; font-weight: 600; }
-      .cart-price { color: var(--accent); font-weight: 700; margin-top: 2px; }
+      .cart-sku { font-size: 11.5px; color: var(--ink-2); }
+      .cart-price { color: var(--accent); font-weight: 700; margin-top: 2px; font-size: 14px; }
+      .cart-fee { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
+      .cart-fee .waived { color: var(--ok); }
       .qty-ctl { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-top: 6px; }
       .qty-ctl button { width: 30px; height: 30px; border: 0; background: var(--surface-2); color: var(--ink); font-size: 16px; }
       .qty-ctl span { min-width: 34px; text-align: center; font-weight: 600; }
-      .del-btn { background: none; border: 0; color: var(--ink-2); font-size: 12.5px; padding: 4px 0; }
+      .del-btn { background: none; border: 0; color: var(--ink-2); font-size: 12.5px; padding: 4px 0 4px 12px; }
+      .cart-line-sum { font-size: 13.5px; margin-top: 6px; }
+      .cart-line-sum b { color: var(--accent); }
       .empty { text-align: center; padding: 34px 10px; color: var(--ink-2); }
-      .total-row { display: flex; justify-content: space-between; align-items: baseline; padding-top: 12px; }
-      .total-row .amt { color: var(--accent); font-size: 20px; font-weight: 800; }
 
       /* ---------- 费用拆分 ---------- */
       .fee-table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
-      .fee-table td { padding: 7px 0; border-bottom: 1px dashed var(--line); }
+      .fee-table td { padding: 7px 0; border-bottom: 1px dashed var(--line); vertical-align: top; }
       .fee-table td:last-child { text-align: right; font-weight: 600; white-space: nowrap; }
       .fee-table tr.grand td { border-bottom: 0; border-top: 2px solid var(--line); padding-top: 10px; font-size: 16px; }
       .fee-table tr.grand td:last-child { color: var(--accent); font-weight: 800; }
+      .fee-table .sub { display: block; font-size: 12px; color: var(--ink-2); font-weight: 400; }
+      .fee-table .sub .waived { color: var(--ok); }
+
+      /* ---------- 发货方式 ---------- */
+      .ship-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      @media (max-width: 380px) { .ship-opts { grid-template-columns: 1fr; } }
+      .ship-opt {
+        border: 1.5px solid var(--line); border-radius: 10px; padding: 12px;
+        background: var(--surface); text-align: left; color: var(--ink); width: 100%;
+      }
+      .ship-opt.on { border-color: var(--brand-deep); background: var(--brand-soft); }
+      .ship-opt[disabled] { opacity: .45; }
+      .ship-opt .s-title { font-size: 15px; font-weight: 700; }
+      .ship-opt .s-desc { font-size: 12px; color: var(--ink-2); margin-top: 3px; line-height: 1.5; }
 
       /* ---------- 登录 ---------- */
       .code-row { display: flex; gap: 8px; }
@@ -235,9 +287,7 @@
         margin-top: 14px; font-size: 14px; color: var(--brand-deep);
       }
       .pay-tips li { margin: 5px 0; }
-      .countdown {
-        text-align: center; padding: 8px 0 2px;
-      }
+      .countdown { text-align: center; padding: 8px 0 2px; }
       .countdown .clock {
         font-size: 46px; font-weight: 800; font-variant-numeric: tabular-nums;
         color: var(--brand-deep); letter-spacing: 2px;
@@ -277,11 +327,12 @@
       .age-gate[hidden] { display: none; }
       .age-box {
         background: var(--surface); color: var(--ink);
-        border-radius: 16px; padding: 26px 22px; max-width: 400px; width: 100%;
+        border-radius: 16px; padding: 26px 22px; max-width: 420px; width: 100%;
         text-align: center; box-shadow: 0 12px 40px rgba(0,0,0,.3);
+        max-height: 88vh; overflow-y: auto;
       }
-      .age-box h2 { margin: 0 0 8px; font-size: 20px; }
-      .age-box p { color: var(--ink-2); font-size: 14px; margin: 0 0 18px; }
+      .age-box h2 { margin: 0 0 10px; font-size: 19px; line-height: 1.45; }
+      .age-box p { color: var(--ink-2); font-size: 13.5px; margin: 0 0 18px; text-align: left; line-height: 1.7; }
       .age-box .btn { margin-top: 8px; }
 
       /* ---------- Toast ---------- */
@@ -312,24 +363,23 @@
     <!-- 年龄确认 -->
     <div class="age-gate" id="ageGate">
       <div class="age-box">
-        <h2>年龄确认</h2>
-        <p>本店（演示版）展示烟草及相关商品。按照相关规定，未满 20 周岁者不得进入、不得购买烟草制品。</p>
-        <p style="font-weight:600;color:var(--ink)">请确认您已年满 20 周岁</p>
-        <button class="btn btn-primary btn-block" id="ageYes">我已满 20 岁，进入店铺</button>
-        <button class="btn btn-ghost btn-block" id="ageNo">未满 20 岁</button>
-        <p class="hint" id="ageMsg" hidden>未满 20 周岁无法进入本店，感谢理解。</p>
+        <h2>お客様は20歳以上ですか？<br />您年满20岁了吗？</h2>
+        <p>日本の関連法令により、タバコ販売者はお客様の年齢確認が義務付けられており、20歳未満の方へのタバコ製品の販売は禁止されております。根据日本相关法令，烟草销售者有义务确认顾客的年龄，禁止向未满20岁的人士销售烟草产品。</p>
+        <button class="btn btn-primary btn-block" id="ageYes">已满20岁，进入店铺</button>
+        <button class="btn btn-ghost btn-block" id="ageNo">未满20岁，离开</button>
+        <p class="hint" id="ageMsg" hidden style="text-align:center">未满 20 周岁无法进入本店，感谢理解。</p>
       </div>
     </div>
 
     <!-- 公告条 -->
     <div class="notice-bar">
-      EMS B队列已受理至<b>24日19点</b><span class="sep">|</span>EMS A队列已受理至<b>24日13点</b><span class="sep">|</span>全站为功能演示，不产生真实订单
+      EMS A队列已受理至<b>24日15点</b><span class="sep">|</span>EMS B队列已受理至<b>25日07点</b><span class="sep">|</span><button id="noticeProcess">查阅下单流程说明</button>
     </div>
 
     <!-- 页眉 -->
     <header class="site">
       <div class="header-in">
-        <div class="logo"><span class="flame">HZ</span> 花泽小店</div>
+        <div class="logo">小虎小店</div>
         <span class="demo-tag">演示版</span>
         <div class="header-spacer"></div>
         <span class="user-chip" id="userChip" hidden></span>
@@ -344,9 +394,31 @@
 
       <!-- ======== 店铺 ======== -->
       <section class="view active" id="view-shop">
+        <div class="bundle-row">
+          <button class="bundle-entry" id="bundleHeated" style="background:#2e7d6e">
+            <span class="b-title">加热烟套餐</span>
+            <span class="b-sub">TEREA / Evo 人气爆珠组合</span>
+          </button>
+          <button class="bundle-entry" id="bundleCig" style="background:#274b73">
+            <span class="b-title">香烟套餐</span>
+            <span class="b-sub">七星 / 梅比乌斯 / 和平组合</span>
+          </button>
+        </div>
+
+        <div class="card bundle-detail" id="bundleDetail" hidden>
+          <h2><span id="bundleTitle"></span><button class="x" id="bundleClose" aria-label="关闭">✕</button></h2>
+          <div id="bundleLines"></div>
+          <div class="bundle-line" style="font-weight:700"><span>套餐商品合计</span><span id="bundleTotal"></span></div>
+          <p class="muted">套餐即下列商品的组合，加入购物车后仍可逐款改数量；服务费按每款各自规则计算。</p>
+          <button class="btn btn-primary btn-block" id="bundleAdd" style="margin-top:10px">一键加入购物车</button>
+        </div>
+
+        <div class="cats-label">商品分类</div>
         <div class="cats" id="cats"></div>
+        <div class="cats-label">按发货方式</div>
+        <div class="cats" id="shipCats"></div>
         <div class="grid" id="grid"></div>
-        <div class="demo-note">演示版说明：商品图为文字色块占位，不使用真实商标图片；价格、费用与队列进度均为演示数据。</div>
+        <div class="demo-note">演示版说明：商品图为文字色块占位，不使用真实商标图片；价格、服务费、运费与队列进度均为演示数据，不产生真实订单。</div>
       </section>
 
       <!-- ======== 购物车 ======== -->
@@ -357,9 +429,15 @@
           <div id="cartLines"></div>
           <div class="empty" id="cartEmpty">购物车还是空的，去逛逛吧。</div>
           <div id="cartFoot">
-            <div class="total-row"><span>商品合计</span><span class="amt" id="cartTotal">¥0</span></div>
-            <p class="muted">服务费与 EMS 运费将在结算页拆分展示。</p>
-            <button class="btn btn-primary btn-block" id="toCheckout">去结算</button>
+            <table class="fee-table" style="margin-top:6px">
+              <tr><td>商品金额</td><td id="ctGoods">¥0</td></tr>
+              <tr><td>服务费合计<span class="sub" id="ctServiceSub"></span></td><td id="ctService">¥0</td></tr>
+              <tr><td>总重量（估算）<span class="sub">每包烟约 30g、烟丝约 50g、耗材约 20g、设备约 150g</span></td><td id="ctWeight">0g</td></tr>
+              <tr><td>预估 EMS 运费<span class="sub">按日本邮政寄中国重量阶梯估算，结算时按所选发货方式确认</span></td><td id="ctShip">¥0</td></tr>
+              <tr class="grand"><td>总计（日元）</td><td id="ctTotal">¥0</td></tr>
+            </table>
+            <p class="muted" style="margin-top:10px">规则提示：每个订单 1 个包裹，订单不支持合并、拆分、增减商品。</p>
+            <button class="btn btn-primary btn-block" id="toCheckout" style="margin-top:8px">去结算</button>
           </div>
         </div>
       </section>
@@ -372,7 +450,7 @@
           <p class="muted">结算前需要先登录。本店采用邮箱验证码登录，无需密码。</p>
           <div class="field" style="margin-top:12px">
             <label for="loginEmail">邮箱地址</label>
-            <input id="loginEmail" type="email" inputmode="email" placeholder="例如 jiannanjiang021@gmail.com" autocomplete="email" />
+            <input id="loginEmail" type="email" inputmode="email" placeholder="请输入邮箱地址" autocomplete="email" />
           </div>
           <div class="field">
             <label for="loginCode">邮件验证码（6 位数字）</label>
@@ -390,6 +468,20 @@
       <section class="view" id="view-checkout">
         <button class="back-link" data-goto="cart">‹ 返回购物车</button>
         <div class="card">
+          <h2>发货方式</h2>
+          <div class="ship-opts">
+            <button class="ship-opt" id="shipOptEms">
+              <div class="s-title">EMS 自缴税</div>
+              <div class="s-desc">报价不含运费与服务费，结算页单独计算；包裹到达中国后，税费由收件人在海关 App 自行缴纳。</div>
+            </button>
+            <button class="ship-opt" id="shipOptTax">
+              <div class="s-title">含税物流</div>
+              <div class="s-desc">报价已含税、含运费，结算总价不变；仅限中国大陆 18 位身份证收件，时效较慢（最快约 2 周）。</div>
+            </button>
+          </div>
+          <p class="hint" id="shipModeHint"></p>
+        </div>
+        <div class="card">
           <h2>收货信息</h2>
           <div class="field">
             <label for="coName">收货人姓名</label>
@@ -403,18 +495,24 @@
             <label for="coAddr">收货地址（中国）</label>
             <input id="coAddr" type="text" placeholder="省 / 市 / 区 + 详细地址" autocomplete="street-address" />
           </div>
+          <div class="field" id="idField" hidden>
+            <label for="coId">收件人身份证号（18 位）</label>
+            <input id="coId" type="text" inputmode="text" maxlength="18" placeholder="含税物流必填，须与收货人一致" autocomplete="off" />
+            <p class="hint">含税物流仅限中国大陆 18 位身份证。</p>
+          </div>
           <p class="hint">演示版：以上信息仅在本页内使用，不会上传或保存。</p>
         </div>
         <div class="card">
           <h2>订单明细</h2>
-          <div id="coLines" class="muted" style="margin-bottom:8px"></div>
-          <table class="fee-table">
+          <div id="coLines"></div>
+          <table class="fee-table" style="margin-top:6px">
             <tr><td>商品金额</td><td id="feeGoods">¥0</td></tr>
-            <tr><td>服务费 <span class="muted" id="feeServiceNote"></span></td><td id="feeService">¥0</td></tr>
-            <tr><td>EMS 运费</td><td id="feeShip">¥0</td></tr>
+            <tr><td>服务费<span class="sub" id="feeServiceSub"></span></td><td id="feeService">¥0</td></tr>
+            <tr><td><span id="feeShipLabel">EMS 运费</span><span class="sub" id="feeShipSub"></span></td><td id="feeShip">¥0</td></tr>
             <tr class="grand"><td>总计（日元）</td><td id="feeTotal">¥0</td></tr>
           </table>
-          <button class="btn btn-primary btn-block" id="toPay" style="margin-top:14px">提交订单并选择支付方式</button>
+          <p class="muted" style="margin-top:10px" id="queuePreview"></p>
+          <button class="btn btn-primary btn-block" id="toPay" style="margin-top:10px">提交订单并选择支付方式</button>
         </div>
       </section>
 
@@ -459,13 +557,15 @@
           <div class="result-icon" style="color:var(--ok)">✓</div>
           <h2 style="text-align:center">支付成功（模拟）</h2>
           <div class="order-no" id="orderNo"></div>
-          <p style="text-align:center;margin-top:10px"><span class="status-badge status-wait" id="orderStatus">已进入 EMS B队列待受理</span></p>
+          <p style="text-align:center;margin-top:10px"><span class="status-badge status-wait" id="orderStatus"></span></p>
           <table class="fee-table" style="margin-top:12px">
             <tr><td>订单金额</td><td id="successAmount">¥0</td></tr>
+            <tr><td>发货方式</td><td id="successShip"></td></tr>
+            <tr><td>所属队列</td><td id="successQueue"></td></tr>
             <tr><td>收货人</td><td id="successName">—</td></tr>
-            <tr><td>队列进度参考</td><td>EMS B队列已受理至 24日19点</td></tr>
+            <tr><td>队列进度参考</td><td id="successQueueRef"></td></tr>
           </table>
-          <p class="muted" style="margin-top:10px">后续流程（演示）：队列受理 → 店铺打包 → EMS 发出 → 到达中国海关后由收件人在海关 App 自行缴税 → 派送。</p>
+          <p class="muted" style="margin-top:10px">A队列为服务费＞0 的订单，B队列为服务费＝0 的订单；本店每日会尽量平均地受理两个队列的订单，大多数时候 B队列会更快。后续流程（演示）：队列受理 → 订货 2–7 天 → 店铺打包 → 发出 → 到达中国后按所选方式缴税 / 派送。</p>
           <button class="btn btn-primary btn-block" id="backShopBtn" style="margin-top:12px">返回店铺继续逛逛</button>
         </div>
 
@@ -478,9 +578,48 @@
         </div>
       </section>
 
+      <!-- ======== 下单流程说明 ======== -->
+      <section class="view" id="view-process">
+        <button class="back-link" data-goto="shop">‹ 返回店铺</button>
+        <div class="card">
+          <h2>下单流程说明</h2>
+          <h3>一、两种寄送模式</h3>
+          <ul class="rule-list">
+            <li><b>EMS 自缴税：</b>商品报价不含运费、服务费，结算页按包裹重量单独计算 EMS 运费；包裹到达中国后，产生的税费由收件人在海关 App 自行缴纳。</li>
+            <li><b>含税物流：</b>商品报价已含税、含运费，结算总价不变（服务费与运费显示“已包含”）；仅限中国大陆 18 位身份证收件，时效较慢，最快约 2 周。</li>
+            <li>加热设备只能选择含税物流发货。</li>
+          </ul>
+          <h3>二、订单队列（A / B）</h3>
+          <ul class="rule-list">
+            <li><b>A队列：</b>服务费总额 ＞ 0 的订单。</li>
+            <li><b>B队列：</b>服务费总额 ＝ 0 的订单。</li>
+            <li>本店每日会尽量平均地受理这 2 个队列的订单，大多数时候 B队列会更快。</li>
+            <li>队列受理进度见页面顶部公告条（演示：EMS A队列已受理至24日15点，EMS B队列已受理至25日07点）。</li>
+          </ul>
+          <h3>三、服务费规则</h3>
+          <ul class="rule-list">
+            <li>服务费按包计（演示参数：每包 100 日元），每款商品按各自规则判定免服务费的包数。</li>
+            <li>“整条10包免服务费”：同款每满 10 包的部分免服务费，不满 10 包的零头按包收取；“每条20包”同理按 20 包计算。</li>
+            <li>标注“1盒 / 1包起免收服务费”的商品不收服务费；标注“无整条免服务费规则”的商品无论买多少都按包收取。</li>
+          </ul>
+          <h3>四、受理与发货</h3>
+          <ul class="rule-list">
+            <li>订单被队列受理后进入订货环节，订货约需 2–7 天，之后店铺打包发出。</li>
+            <li>每个订单 1 个包裹，订单不支持合并、拆分、增减商品；下错单请取消后重新下单。</li>
+            <li>EMS 运费按日本邮政寄中国的重量阶梯计算（演示参数）：≤500g ¥1,450、≤600g ¥1,600、≤700g ¥1,750、≤800g ¥1,900、≤900g ¥2,050、≤1.0kg ¥2,200、≤1.5kg ¥2,800、≤2.0kg ¥3,400。重量为估算：每包烟约 30g、烟丝约 50g、耗材约 20g。</li>
+          </ul>
+          <h3>五、支付</h3>
+          <ul class="rule-list">
+            <li>本店仅支持银联支付，请提前安装云闪付 App 并绑定带银联标志的银行卡，确认未关闭国际支付、网购限额足够。</li>
+            <li>支付链接有效期 5 分钟，超时请回支付页重新获取；多次超时订单将自动关闭。</li>
+          </ul>
+          <p class="demo-note">以上为演示版文案与参数，用于展示下单流程与计费逻辑，不构成真实交易规则。</p>
+        </div>
+      </section>
+
       <footer class="site">
         <h3>关于下单与发货（演示文案）</h3>
-        <p>EMS 下单后区分 A、B 两个队列，按受理顺序打包发货；队列进度见页面顶部公告条。包裹到达中国后产生的税费由收件人自行在海关 App 缴纳，邮寄烟草制品请遵守海关关于个人邮寄物品的数量限制。</p>
+        <p>下单后订单按服务费进入 A / B 队列，按受理顺序订货、打包发货，队列进度见页面顶部公告条，详细规则见<button style="background:none;border:0;color:var(--brand-deep);font-size:12.5px;padding:0;text-decoration:underline" id="footProcess">下单流程说明</button>。邮寄烟草制品请遵守海关关于个人邮寄物品的数量限制。</p>
         <p>本站为功能演示版：不接入真实支付、不收集真实个人信息、不产生真实订单与物流。</p>
       </footer>
     </div>
@@ -497,30 +636,54 @@
 
     <script>
       "use strict";
-      /* ================= 数据（演示） ================= */
-      var CATS = ["全部", "日本香烟", "外国香烟", "加热烟草", "手卷烟丝", "用具耗材"];
+      /* ================= 配置（演示参数，可改） ================= */
+      var SERVICE_PER_PACK = 100;   /* 服务费：每包 100 日元 */
+      var LINK_SECONDS = 300;       /* 支付链接有效期 5 分钟 */
+      var MAX_TIMEOUTS = 3;         /* 超时 3 次订单自动关闭 */
+      /* EMS 运费阶梯（日本邮政寄中国，演示参数）：[克重上限, 日元] */
+      var SHIP_TIERS = [[500,1450],[600,1600],[700,1750],[800,1900],[900,2050],[1000,2200],[1500,2800],[2000,3400]];
+
+      /* ================= 商品数据（演示，仿原站字段） =================
+         rule: free10=整条10包免服务费 / free20=每条20包免 / always=起免收服务费 / none=无免服务费规则
+         weight: 单件估算克重（烟30g、烟丝50g、耗材20g、设备150g） */
+      var CATS = ["全部", "香烟", "加热烟", "手卷烟丝", "用具耗材"];
       var PRODUCTS = [
-        { id: "seven14",  cat: "日本香烟", name: "七星 14mg 软包",        spec: "碳滤软盒 · 20支/包",        price: 600, limit: 2, art: ["七星", "SEVEN STARS · 14mg"], color: "#274b73" },
-        { id: "seven10",  cat: "日本香烟", name: "七星 10mg",             spec: "硬盒 · 20支/包",            price: 600, limit: 0, art: ["七星", "SEVEN STARS · 10mg"], color: "#3a6ea8" },
-        { id: "mevius10", cat: "日本香烟", name: "梅比乌斯 10mg",         spec: "硬盒 · 20支/包",            price: 580, limit: 0, art: ["梅比乌斯", "MEVIUS · 10mg"],      color: "#7a4b8f" },
-        { id: "camel",    cat: "外国香烟", name: "骆驼 Craft 12mg",       spec: "硬盒 · 20支/包",            price: 450, limit: 0, art: ["骆驼", "CAMEL CRAFT · 12mg"],   color: "#b07a2e" },
-        { id: "marlboro", cat: "外国香烟", name: "万宝路 12mg",           spec: "硬盒 · 20支/包",            price: 620, limit: 0, art: ["万宝路", "MARLBORO · 12mg"],    color: "#a8322a" },
-        { id: "capitaine",cat: "外国香烟", name: "卡比龙",                spec: "总统版 · 20支/包",          price: 750, limit: 2, art: ["卡比龙", "CAPITAINE"],          color: "#54575e" },
-        { id: "terea",    cat: "加热烟草", name: "TEREA 烟弹（IQOS ILUMA 专用）", spec: "20支/盒 · 多种口味", price: 640, limit: 0, art: ["TEREA", "FOR IQOS ILUMA"],      color: "#2e7d6e" },
-        { id: "captain",  cat: "手卷烟丝", name: "老船长烟丝 30g",        spec: "手卷烟丝 · 30g/袋",         price: 840, limit: 0, art: ["老船长", "HAND ROLLING · 30g"], color: "#5d4037" },
-        { id: "filter",   cat: "用具耗材", name: "活性炭滤嘴",            spec: "9mm · 100支/盒",           price: 440, limit: 0, art: ["滤嘴", "ACTIVATED CARBON"],   color: "#607d8b" }
+        { id:"t1274", sku:"T1274", cat:"香烟", name:"七星/SevenStars 14mg 硬盒 黑色限定", jp:"セブンスター・ボックス", price:600, unit:"包", rule:"none", note:"季节限定，售完即止", isNew:true, weight:30, art:["七星","SEVEN STARS"], color:"#274b73" },
+        { id:"t1276", sku:"T1276", cat:"香烟", name:"七星/SevenStars 7mg 硬盒 黑色限定", jp:"セブンスター・7・ボックス", price:600, unit:"包", rule:"none", note:"季节限定", isNew:true, weight:30, art:["七星","SEVEN STARS 7"], color:"#33587f" },
+        { id:"t1273", sku:"T1273", cat:"香烟", name:"七星/SevenStars 14mg 软盒 黑色限定", jp:"セブンスター", price:600, unit:"包", rule:"none", note:"季节限定", isNew:true, weight:30, art:["七星","SEVEN STARS SOFT"], color:"#1f3d5c" },
+        { id:"p1020", sku:"1020", cat:"香烟", name:"七星/SevenStars 碳滤 14mg 软盒", jp:"セブンスター", price:600, unit:"包", rule:"free10", note:"", isNew:false, weight:30, art:["七星","SEVEN STARS 碳滤"], color:"#3a6ea8" },
+        { id:"p1861", sku:"1861", cat:"香烟", name:"梅比乌斯/MEVIUS E系列 12mg 硬盒", jp:"メビウス・イーシリーズ・１２", price:500, unit:"包", rule:"free10", note:"", isNew:false, weight:30, art:["梅比乌斯","MEVIUS E 12"], color:"#7a4b8f" },
+        { id:"p1286", sku:"1286", cat:"香烟", name:"梅比乌斯/MEVIUS 10mg 硬盒", jp:"メビウス・ボックス", price:580, unit:"包", rule:"free10", note:"", isNew:false, weight:30, art:["梅比乌斯","MEVIUS 10"], color:"#5b3a75" },
+        { id:"p1018", sku:"1018", cat:"香烟", name:"和平/Peace 黄 21mg 软盒", jp:"ピース（２０本入）", price:600, unit:"包", rule:"free10", note:"", isNew:false, weight:30, art:["和平","PEACE 21"], color:"#8a6d1f" },
+        { id:"p1470", sku:"1470", cat:"香烟", name:"云斯顿/Winston 红 12mg 软盒", jp:"ウィンストン", price:530, unit:"包", rule:"free10", note:"", isNew:false, weight:30, art:["云斯顿","WINSTON 12"], color:"#a8322a" },
+        { id:"p1600", sku:"1600", cat:"香烟", name:"美国精神/AmericanSpirit 有机烟叶 绿松石 12mg 14支装", jp:"", price:420, unit:"包", rule:"free10", note:"", isNew:false, weight:30, art:["美国精神","AMERICAN SPIRIT"], color:"#1f7a6d" },
+        { id:"p1016", sku:"1016", cat:"香烟", name:"希望/Hope 原味 14mg 10支 硬盒", jp:"ホープ（１０本入）", price:300, unit:"包", rule:"free20", note:"", isNew:false, weight:30, art:["希望","HOPE 14"], color:"#4a6741" },
+        { id:"p2382", sku:"2382", cat:"香烟", name:"黑杰克/BlackJack Supasawa Pineapple 8mg（菠萝）", jp:"", price:500, unit:"包", rule:"free10", note:"", isNew:false, weight:30, art:["黑杰克","BLACK JACK"], color:"#3c3f45" },
+        { id:"p2090", sku:"2090", cat:"香烟", name:"卡比龙/Cigaronne 幻影 银色", jp:"シガローネ・ファントム・シルバー", price:1100, unit:"包", rule:"free10", note:"本款整条为硬条盒", isNew:false, weight:30, art:["卡比龙","CIGARONNE"], color:"#54575e" },
+        { id:"p2608", sku:"2608", cat:"香烟", name:"卡比龙/Cigaronne 极致细 黑色", jp:"", price:700, unit:"包", rule:"free10", note:"", isNew:false, weight:30, art:["卡比龙","CIGARONNE SLIM"], color:"#2c2e33" },
+        { id:"p3115", sku:"3115", cat:"加热烟", name:"TEREA 黑薄荷 Black Mint Pearl（薄荷爆珠）", jp:"テリア·ブラック·ミント·パール", price:640, unit:"包", rule:"free10", note:"IQOS ILUMA 专用烟弹", isNew:true, weight:30, art:["TEREA","BLACK MINT PEARL"], color:"#20504a" },
+        { id:"p2604", sku:"2604", cat:"加热烟", name:"TEREA 闪耀爆珠 Shine Pearl（青提爆珠）", jp:"テリア・シャイン・パール", price:640, unit:"包", rule:"free10", note:"IQOS ILUMA 专用烟弹", isNew:false, weight:30, art:["TEREA","SHINE PEARL"], color:"#2e7d6e" },
+        { id:"p6950", sku:"6950", cat:"加热烟", name:"梅比乌斯/MEVIUS 热带爆珠 Tropical Option（芒果）", jp:"メビウス·トロピカル·オプション·プルーム用", price:590, unit:"包", rule:"free10", note:"ploom 专用烟弹", isNew:true, weight:30, art:["梅比乌斯","TROPICAL OPTION"], color:"#96602a" },
+        { id:"p1998", sku:"1998", cat:"加热烟", name:"Evo 可可薄荷 Cacao Mint Crystal", jp:"エボ·カカオ·ミント·クリスタル·プル一ム用", price:620, unit:"包", rule:"free10", note:"ploom 专用烟弹", isNew:true, weight:30, art:["Evo","CACAO MINT"], color:"#5d4037" },
+        { id:"p3953", sku:"3953", cat:"手卷烟丝", name:"骆驼/Camel Menthol 25g装", jp:"キャメル・メンソール（25g）", price:770, unit:"包", rule:"none", ruleText:"本款无整大包免服务费规则", note:"带纸", isNew:false, weight:50, art:["骆驼","CAMEL MENTHOL"], color:"#b07a2e" },
+        { id:"d002", sku:"D002", cat:"用具耗材", name:"Tiltil Mitil Micro Filter 滤嘴 10个", jp:"パイプチルチルミクロフィルター", price:120, unit:"盒", rule:"always", ruleText:"1盒起免收服务费", note:"", isNew:true, weight:20, art:["Tiltil","MICRO FILTER"], color:"#607d8b" },
+        { id:"c088", sku:"C088", cat:"用具耗材", name:"Smoking Brown Single 60张", jp:"スモーキング・ブラウン・シングル", price:110, unit:"包", rule:"always", ruleText:"1包起免收服务费", note:"", isNew:false, weight:20, art:["Smoking","BROWN SINGLE"], color:"#795548" },
+        { id:"eq01", sku:"EQ01", cat:"用具耗材", name:"IQOS ILUMA ONE 加热设备", jp:"アイコス・イルマ・ワン", price:3980, unit:"台", rule:"always", ruleText:"1台起免收服务费", note:"加热设备仅支持含税物流", isNew:false, weight:150, taxOnly:true, art:["IQOS","ILUMA ONE"], color:"#455a64" }
       ];
-      var SERVICE_PER_PACK = 100;     /* 每包服务费（演示规则） */
-      var SERVICE_FREE_QTY = 10;      /* 单品满 10 包（整条）该品免服务费 */
-      var SHIP_FEE = 1800;            /* EMS 运费（演示） */
-      var LINK_SECONDS = 300;         /* 支付链接有效期 5 分钟 */
-      var MAX_TIMEOUTS = 3;           /* 超时 3 次订单自动关闭 */
+      var BUNDLES = {
+        heated: { title: "加热烟套餐", items: [["p3115", 2], ["p2604", 2], ["p1998", 1]] },
+        cig:    { title: "香烟套餐",   items: [["p1020", 2], ["p1286", 2], ["p1018", 1]] }
+      };
 
       /* ================= 状态 ================= */
       var cart = {};                  /* id -> qty */
+      var cardQty = {};               /* 商品卡步进器数量 id -> n */
       var loggedInEmail = "";
       var currentCat = "全部";
-      var order = null;               /* {no, total, name, timeouts, timerId, remain, state} */
+      var shipFilter = "all";         /* all / ems / tax */
+      var shipMode = "ems";           /* 结算发货方式 ems / tax */
+      var currentBundle = null;
+      var order = null;               /* {no,total,name,shipMode,queue,timeouts,timerId,remain,state} */
       var pendingGotoCheckout = false;
 
       function $(id) { return document.getElementById(id); }
@@ -528,15 +691,33 @@
       function prod(id) { for (var i = 0; i < PRODUCTS.length; i++) if (PRODUCTS[i].id === id) return PRODUCTS[i]; return null; }
       function cartCount() { var s = 0; for (var k in cart) s += cart[k]; return s; }
       function cartGoodsTotal() { var s = 0; for (var k in cart) s += prod(k).price * cart[k]; return s; }
-      function serviceFee() {
-        var s = 0;
-        for (var k in cart) { var p = prod(k); if (cart[k] < SERVICE_FREE_QTY) s += SERVICE_PER_PACK * cart[k]; }
-        return s;
+      function cartWeight() { var s = 0; for (var k in cart) s += prod(k).weight * cart[k]; return s; }
+      function cartHasTaxOnly() { for (var k in cart) if (prod(k).taxOnly) return true; return false; }
+
+      /* 服务费：返回 {fee 应收, waived 已免, chargedPacks 计费包数} */
+      function itemFee(p, q) {
+        var charged = q;
+        if (p.rule === "always") charged = 0;
+        else if (p.rule === "free10") charged = q - Math.floor(q / 10) * 10;
+        else if (p.rule === "free20") charged = q - Math.floor(q / 20) * 20;
+        return { fee: charged * SERVICE_PER_PACK, waived: (q - charged) * SERVICE_PER_PACK, chargedPacks: charged };
       }
-      function fees() {
-        var g = cartGoodsTotal(), s = serviceFee(), ship = cartCount() > 0 ? SHIP_FEE : 0;
-        return { goods: g, service: s, ship: ship, total: g + s + ship };
+      function serviceFeeTotal() { var s = 0; for (var k in cart) s += itemFee(prod(k), cart[k]).fee; return s; }
+      function waivedTotal() { var s = 0; for (var k in cart) s += itemFee(prod(k), cart[k]).waived; return s; }
+      function ruleText(p) {
+        if (p.ruleText) return "服务费：" + p.ruleText.replace("免收服务费", "免收服务费");
+        if (p.rule === "free10") return "服务费 " + yen(SERVICE_PER_PACK) + "/" + p.unit + " · 整条10" + p.unit + "免服务费";
+        if (p.rule === "free20") return "服务费 " + yen(SERVICE_PER_PACK) + "/" + p.unit + " · 每条20" + p.unit + "，同款满20" + p.unit + "免服务费";
+        if (p.rule === "always") return "免收服务费";
+        return "服务费 " + yen(SERVICE_PER_PACK) + "/" + p.unit + " · 无整条免服务费规则";
       }
+      function shipFeeByWeight(g) {
+        if (g <= 0) return 0;
+        for (var i = 0; i < SHIP_TIERS.length; i++) if (g <= SHIP_TIERS[i][0]) return SHIP_TIERS[i][1];
+        var extra = Math.ceil((g - 2000) / 500);
+        return 3400 + extra * 600;  /* 超 2kg 演示外推：每 500g 加 ¥600 */
+      }
+      function queueOf(serviceFee) { return serviceFee > 0 ? "A" : "B"; }
 
       var toastTimer = null;
       function toast(msg) {
@@ -546,10 +727,10 @@
       }
 
       /* ================= 视图切换 ================= */
+      var VIEWS = ["shop", "cart", "login", "checkout", "pay", "paylink", "process"];
       function show(view) {
-        var views = ["shop", "cart", "login", "checkout", "pay", "paylink"];
-        for (var i = 0; i < views.length; i++)
-          $("view-" + views[i]).classList.toggle("active", views[i] === view);
+        for (var i = 0; i < VIEWS.length; i++)
+          $("view-" + VIEWS[i]).classList.toggle("active", VIEWS[i] === view);
         $("stickyBar").classList.toggle("show", view === "shop" && cartCount() > 0);
         window.scrollTo(0, 0);
       }
@@ -557,6 +738,38 @@
       /* ================= 年龄确认 ================= */
       $("ageYes").addEventListener("click", function () { $("ageGate").hidden = true; });
       $("ageNo").addEventListener("click", function () { $("ageMsg").hidden = false; });
+
+      /* ================= 流程说明入口 ================= */
+      $("noticeProcess").addEventListener("click", function () { show("process"); });
+      $("footProcess").addEventListener("click", function () { show("process"); });
+
+      /* ================= 套餐 ================= */
+      function openBundle(key) {
+        currentBundle = key;
+        var b = BUNDLES[key];
+        $("bundleTitle").textContent = b.title;
+        var box = $("bundleLines"); box.innerHTML = "";
+        var total = 0;
+        b.items.forEach(function (it) {
+          var p = prod(it[0]); total += p.price * it[1];
+          var line = document.createElement("div"); line.className = "bundle-line";
+          var l = document.createElement("span"); l.textContent = p.name + " × " + it[1];
+          var r = document.createElement("span"); r.textContent = yen(p.price * it[1]);
+          line.appendChild(l); line.appendChild(r); box.appendChild(line);
+        });
+        $("bundleTotal").textContent = yen(total);
+        $("bundleDetail").hidden = false;
+        $("bundleDetail").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+      $("bundleHeated").addEventListener("click", function () { openBundle("heated"); });
+      $("bundleCig").addEventListener("click", function () { openBundle("cig"); });
+      $("bundleClose").addEventListener("click", function () { $("bundleDetail").hidden = true; });
+      $("bundleAdd").addEventListener("click", function () {
+        if (!currentBundle) return;
+        BUNDLES[currentBundle].items.forEach(function (it) { cart[it[0]] = (cart[it[0]] || 0) + it[1]; });
+        syncCartUI();
+        toast("已加入购物车：" + BUNDLES[currentBundle].title);
+      });
 
       /* ================= 商品列表 ================= */
       function renderCats() {
@@ -568,41 +781,78 @@
           b.addEventListener("click", function () { currentCat = c; renderCats(); renderGrid(); });
           box.appendChild(b);
         });
+        var sb = $("shipCats"); sb.innerHTML = "";
+        [["all", "全部方式"], ["ems", "EMS自缴税"], ["tax", "含税物流"]].forEach(function (o) {
+          var b = document.createElement("button");
+          b.className = "cat" + (o[0] === shipFilter ? " on" : "");
+          b.textContent = o[1];
+          b.addEventListener("click", function () { shipFilter = o[0]; renderCats(); renderGrid(); });
+          sb.appendChild(b);
+        });
       }
       function renderGrid() {
         var g = $("grid"); g.innerHTML = "";
-        PRODUCTS.filter(function (p) { return currentCat === "全部" || p.cat === currentCat; })
-        .forEach(function (p) {
+        PRODUCTS.filter(function (p) {
+          if (currentCat !== "全部" && p.cat !== currentCat) return false;
+          if (shipFilter === "ems" && p.taxOnly) return false;   /* EMS 方式下隐藏只能含税的设备 */
+          return true;
+        }).forEach(function (p) {
           var card = document.createElement("div"); card.className = "prod";
           var art = document.createElement("div"); art.className = "prod-art"; art.style.background = p.color;
-          art.innerHTML = "";
           var bn = document.createElement("div"); bn.className = "brand-name"; bn.textContent = p.art[0];
           var as = document.createElement("div"); as.className = "art-sub"; as.textContent = p.art[1];
           art.appendChild(bn); art.appendChild(as);
+
           var body = document.createElement("div"); body.className = "prod-body";
+          var skuRow = document.createElement("div"); skuRow.className = "sku-row";
+          var sku = document.createElement("span"); sku.className = "sku"; sku.textContent = "货号 " + p.sku;
+          skuRow.appendChild(sku);
+          if (p.isNew) { var nt = document.createElement("span"); nt.className = "new-tag"; nt.textContent = "新品"; skuRow.appendChild(nt); }
+          body.appendChild(skuRow);
           var nm = document.createElement("div"); nm.className = "prod-name"; nm.textContent = p.name;
-          var sp = document.createElement("div"); sp.className = "prod-spec"; sp.textContent = p.spec;
-          body.appendChild(nm); body.appendChild(sp);
-          if (p.limit > 0) {
-            var lt = document.createElement("span"); lt.className = "limit-tag"; lt.textContent = "限购 " + p.limit + " 包";
-            body.appendChild(lt);
-          }
+          body.appendChild(nm);
+          if (p.jp) { var jp = document.createElement("div"); jp.className = "prod-jp"; jp.textContent = p.jp; body.appendChild(jp); }
+          var ct = document.createElement("div"); ct.className = "prod-cat";
+          ct.textContent = "分类：" + p.cat + (p.taxOnly ? " · 仅含税物流" : "");
+          body.appendChild(ct);
+          if (p.note) { var no = document.createElement("div"); no.className = "prod-note"; no.textContent = p.note; body.appendChild(no); }
+          var rl = document.createElement("div"); rl.className = "prod-rule"; rl.textContent = ruleText(p);
+          body.appendChild(rl);
+
           var foot = document.createElement("div"); foot.className = "prod-foot";
-          var pr = document.createElement("span"); pr.className = "price"; pr.innerHTML = yen(p.price) + " <small>/包</small>";
+          var pr = document.createElement("span"); pr.className = "price";
+          pr.innerHTML = p.price.toLocaleString("ja-JP") + "日元 <small>/" + p.unit + "</small>";
+          foot.appendChild(pr);
+          var acts = document.createElement("div"); acts.className = "prod-actions";
+          var step = document.createElement("div"); step.className = "qty-step";
+          var minus = document.createElement("button"); minus.textContent = "−"; minus.setAttribute("aria-label", "减少数量");
+          var span = document.createElement("span"); span.textContent = cardQty[p.id] || 1;
+          var plus = document.createElement("button"); plus.textContent = "+"; plus.setAttribute("aria-label", "增加数量");
+          minus.addEventListener("click", function () {
+            var q = Math.max(1, (cardQty[p.id] || 1) - 1); cardQty[p.id] = q; span.textContent = q;
+          });
+          plus.addEventListener("click", function () {
+            var q = Math.min(99, (cardQty[p.id] || 1) + 1); cardQty[p.id] = q; span.textContent = q;
+          });
+          step.appendChild(minus); step.appendChild(span); step.appendChild(plus);
           var add = document.createElement("button"); add.className = "add-btn"; add.textContent = "加入购物车";
-          add.addEventListener("click", function () { addToCart(p.id); });
-          foot.appendChild(pr); foot.appendChild(add);
+          add.addEventListener("click", function () { addToCart(p.id, cardQty[p.id] || 1); });
+          acts.appendChild(step); acts.appendChild(add);
+          foot.appendChild(acts);
           body.appendChild(foot);
           card.appendChild(art); card.appendChild(body);
           g.appendChild(card);
         });
+        if (!g.children.length) {
+          var e = document.createElement("div"); e.className = "empty"; e.style.gridColumn = "1 / -1";
+          e.textContent = "该筛选下暂无商品。";
+          g.appendChild(e);
+        }
       }
-      function addToCart(id) {
-        var p = prod(id), cur = cart[id] || 0;
-        if (p.limit > 0 && cur >= p.limit) { toast("「" + p.name + "」限购 " + p.limit + " 包，已达上限"); return; }
-        cart[id] = cur + 1;
+      function addToCart(id, qty) {
+        cart[id] = (cart[id] || 0) + qty;
         syncCartUI();
-        toast("已加入购物车：" + p.name);
+        toast("已加入购物车：" + prod(id).name + " × " + qty);
       }
 
       /* ================= 购物车 ================= */
@@ -621,13 +871,25 @@
         $("cartEmpty").style.display = ids.length ? "none" : "block";
         $("cartFoot").style.display = ids.length ? "block" : "none";
         ids.forEach(function (id) {
-          var p = prod(id), q = cart[id];
+          var p = prod(id), q = cart[id], f = itemFee(p, q);
           var line = document.createElement("div"); line.className = "cart-line";
+          var top = document.createElement("div"); top.className = "cart-line-top";
           var th = document.createElement("div"); th.className = "thumb"; th.style.background = p.color; th.textContent = p.art[0].slice(0, 2);
           var main = document.createElement("div"); main.className = "cart-main";
-          var nm = document.createElement("div"); nm.className = "cart-name";
-          nm.textContent = p.name + (p.limit > 0 ? "（限购 " + p.limit + " 包）" : "");
-          var pr = document.createElement("div"); pr.className = "cart-price"; pr.textContent = yen(p.price) + " × " + q + " = " + yen(p.price * q);
+          var nm = document.createElement("div"); nm.className = "cart-name"; nm.textContent = p.name;
+          var sk = document.createElement("div"); sk.className = "cart-sku"; sk.textContent = "货号 " + p.sku + " · " + p.cat;
+          var pr = document.createElement("div"); pr.className = "cart-price";
+          pr.textContent = yen(p.price) + "/" + p.unit + " × " + q + " = " + yen(p.price * q);
+          var fe = document.createElement("div"); fe.className = "cart-fee";
+          fe.innerHTML = "";
+          var feTxt = document.createElement("span");
+          feTxt.textContent = "本款服务费 " + yen(f.fee) + (f.chargedPacks < q ? "（" + f.chargedPacks + " " + p.unit + "计费）" : "");
+          fe.appendChild(feTxt);
+          if (f.waived > 0) {
+            var wv = document.createElement("span"); wv.className = "waived";
+            wv.textContent = " · 已免 " + yen(f.waived);
+            fe.appendChild(wv);
+          }
           var ctl = document.createElement("div"); ctl.className = "qty-ctl";
           var minus = document.createElement("button"); minus.textContent = "−"; minus.setAttribute("aria-label", "减少");
           var span = document.createElement("span"); span.textContent = q;
@@ -637,17 +899,27 @@
           ctl.appendChild(minus); ctl.appendChild(span); ctl.appendChild(plus);
           var del = document.createElement("button"); del.className = "del-btn"; del.textContent = "删除";
           del.addEventListener("click", function () { delete cart[id]; syncCartUI(); });
-          main.appendChild(nm); main.appendChild(pr); main.appendChild(ctl); main.appendChild(document.createElement("br")); main.appendChild(del);
-          line.appendChild(th); line.appendChild(main);
+          main.appendChild(nm); main.appendChild(sk); main.appendChild(pr); main.appendChild(fe);
+          main.appendChild(ctl); main.appendChild(del);
+          top.appendChild(th); top.appendChild(main);
+          var sum = document.createElement("div"); sum.className = "cart-line-sum";
+          sum.innerHTML = "本款小计（商品＋服务费） <b>" + yen(p.price * q + f.fee) + "</b>";
+          line.appendChild(top); line.appendChild(sum);
           box.appendChild(line);
         });
-        $("cartTotal").textContent = yen(cartGoodsTotal());
+        var goods = cartGoodsTotal(), svc = serviceFeeTotal(), w = cartWeight(), ship = shipFeeByWeight(w);
+        $("ctGoods").textContent = yen(goods);
+        $("ctService").textContent = yen(svc);
+        var wv = waivedTotal();
+        $("ctServiceSub").textContent = wv > 0 ? "（整条等规则已免 " + yen(wv) + "）" : "";
+        $("ctWeight").textContent = w >= 1000 ? (w / 1000).toFixed(2).replace(/\.?0+$/, "") + "kg（" + w + "g）" : w + "g";
+        $("ctShip").textContent = yen(ship);
+        $("ctTotal").textContent = yen(goods + svc + ship);
       }
       function changeQty(id, d) {
-        var p = prod(id), q = (cart[id] || 0) + d;
-        if (q <= 0) { delete cart[id]; syncCartUI(); return; }
-        if (p.limit > 0 && q > p.limit) { toast("「" + p.name + "」限购 " + p.limit + " 包"); return; }
-        cart[id] = q; syncCartUI();
+        var q = (cart[id] || 0) + d;
+        if (q <= 0) { delete cart[id]; } else { cart[id] = q; }
+        syncCartUI();
       }
 
       /* ================= 导航 ================= */
@@ -661,7 +933,7 @@
       $("toCheckout").addEventListener("click", function () {
         if (cartCount() === 0) { toast("购物车是空的"); return; }
         if (!loggedInEmail) { pendingGotoCheckout = true; show("login"); }
-        else { renderCheckout(); show("checkout"); }
+        else { enterCheckout(); }
       });
       var codeCooldown = 0, codeTimer = null;
       $("sendCode").addEventListener("click", function () {
@@ -685,34 +957,79 @@
         loggedInEmail = email;
         var chip = $("userChip"); chip.hidden = false; chip.textContent = email;
         toast("登录成功（演示）");
-        if (pendingGotoCheckout) { pendingGotoCheckout = false; renderCheckout(); show("checkout"); }
+        if (pendingGotoCheckout) { pendingGotoCheckout = false; enterCheckout(); }
         else show("shop");
       });
 
       /* ================= 结算 ================= */
+      function setShipMode(m) {
+        if (m === "ems" && cartHasTaxOnly()) { toast("购物车含加热设备，只能选择含税物流"); return; }
+        shipMode = m;
+        renderCheckout();
+      }
+      $("shipOptEms").addEventListener("click", function () { setShipMode("ems"); });
+      $("shipOptTax").addEventListener("click", function () { setShipMode("tax"); });
+      function enterCheckout() {
+        if (cartHasTaxOnly()) shipMode = "tax";
+        renderCheckout();
+        show("checkout");
+      }
       function renderCheckout() {
-        var f = fees();
-        var lines = Object.keys(cart).map(function (id) {
-          var p = prod(id); return p.name + " × " + cart[id];
-        }).join("；");
-        $("coLines").textContent = lines;
-        $("feeGoods").textContent = yen(f.goods);
-        $("feeService").textContent = yen(f.service);
-        $("feeServiceNote").textContent = "（每包 " + yen(SERVICE_PER_PACK) + "，单品满 " + SERVICE_FREE_QTY + " 包免该品服务费）";
-        $("feeShip").textContent = yen(f.ship);
-        $("feeTotal").textContent = yen(f.total);
+        var hasTaxOnly = cartHasTaxOnly();
+        $("shipOptEms").classList.toggle("on", shipMode === "ems");
+        $("shipOptTax").classList.toggle("on", shipMode === "tax");
+        $("shipOptEms").disabled = hasTaxOnly;
+        $("shipModeHint").textContent = hasTaxOnly
+          ? "购物车含加热设备，按规则只能选择含税物流。"
+          : (shipMode === "tax" ? "含税物流：报价已含税含运费，总价不变；时效较慢，最快约 2 周。" : "EMS 自缴税：运费按重量单独计算，税费到中国后在海关 App 自缴。");
+        $("idField").hidden = shipMode !== "tax";
+
+        var box = $("coLines"); box.innerHTML = "";
+        Object.keys(cart).forEach(function (id) {
+          var p = prod(id), q = cart[id], f = itemFee(p, q);
+          var row = document.createElement("div"); row.className = "bundle-line";
+          var l = document.createElement("span");
+          l.textContent = p.name + " × " + q + "（服务费 " + (shipMode === "tax" ? "已包含" : yen(f.fee)) + (f.waived > 0 && shipMode !== "tax" ? "，已免 " + yen(f.waived) : "") + "）";
+          var r = document.createElement("span"); r.textContent = yen(p.price * q);
+          row.appendChild(l); row.appendChild(r); box.appendChild(row);
+        });
+
+        var goods = cartGoodsTotal(), svc = serviceFeeTotal(), w = cartWeight(), ship = shipFeeByWeight(w);
+        $("feeGoods").textContent = yen(goods);
+        if (shipMode === "tax") {
+          $("feeService").textContent = "已包含";
+          $("feeServiceSub").textContent = "";
+          $("feeShipLabel").textContent = "运费（约 " + (w >= 1000 ? (w / 1000).toFixed(2).replace(/\.?0+$/, "") + "kg" : w + "g") + "）";
+          $("feeShip").textContent = "已包含";
+          $("feeShipSub").textContent = "含税物流报价已含税含运费";
+          $("feeTotal").textContent = yen(goods);
+        } else {
+          $("feeService").textContent = yen(svc);
+          var wv = waivedTotal();
+          $("feeServiceSub").textContent = wv > 0 ? "整条等规则已免 " + yen(wv) : "";
+          $("feeShipLabel").textContent = "EMS 运费（约 " + w + "g）";
+          $("feeShip").textContent = yen(ship);
+          $("feeShipSub").textContent = "按重量阶梯计算，税费到中国后自缴";
+          $("feeTotal").textContent = yen(goods + svc + ship);
+        }
+        var q = queueOf(svc);
+        $("queuePreview").textContent = "本订单服务费 " + yen(svc) + "，" + (svc > 0 ? "大于 0，支付后将进入 EMS A队列。" : "等于 0，支付后将进入 EMS B队列（大多数时候更快）。");
       }
       $("toPay").addEventListener("click", function () {
         if (!$("coName").value.trim()) { toast("请填写收货人姓名"); return; }
         if (!/^1\d{10}$/.test($("coPhone").value.trim())) { toast("请填写 11 位中国大陆手机号（演示校验）"); return; }
         if ($("coAddr").value.trim().length < 6) { toast("请填写完整的收货地址"); return; }
-        var f = fees();
+        if (shipMode === "tax" && !/^\d{17}[\dXx]$/.test($("coId").value.trim())) { toast("含税物流需填写 18 位身份证号"); return; }
+        if (shipMode === "ems" && cartHasTaxOnly()) { toast("加热设备只能选择含税物流"); return; }
+        var goods = cartGoodsTotal(), svc = serviceFeeTotal(), ship = shipFeeByWeight(cartWeight());
+        var total = shipMode === "tax" ? goods : goods + svc + ship;
         order = {
-          no: "DEMO" + String(Date.now()).slice(-10),
-          total: f.total, name: $("coName").value.trim(),
+          no: "XH" + String(Date.now()).slice(-10),
+          total: total, name: $("coName").value.trim(),
+          shipMode: shipMode, queue: queueOf(svc),
           timeouts: 0, state: "created", timerId: null, remain: 0
         };
-        $("payAmount").textContent = yen(f.total);
+        $("payAmount").textContent = yen(total);
         show("pay");
       });
 
@@ -780,9 +1097,12 @@
         $("payClosedCard").hidden = true;
         $("paySuccessCard").hidden = false;
         $("orderNo").textContent = "订单号 " + order.no;
-        $("orderStatus").textContent = "已进入 EMS B队列待受理";
+        $("orderStatus").textContent = "已进入 EMS " + order.queue + "队列待受理";
         $("successAmount").textContent = yen(order.total) + "（日元）";
+        $("successShip").textContent = order.shipMode === "tax" ? "含税物流" : "EMS 自缴税";
+        $("successQueue").textContent = "EMS " + order.queue + "队列";
         $("successName").textContent = order.name;
+        $("successQueueRef").textContent = order.queue === "A" ? "EMS A队列已受理至 24日15点" : "EMS B队列已受理至 25日07点";
         cart = {}; syncCartUI();
       });
       $("cancelOrderBtn").addEventListener("click", function () {
