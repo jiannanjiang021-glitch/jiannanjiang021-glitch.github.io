@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>日本小店演示版</title>
+    <style>
+      :root {
+        --bg: #eef6fb;
+        --surface: #ffffff;
+        --surface-2: #f2f8fc;
+        --ink: #1c2b36;
+        --ink-2: #5a6b78;
+        --line: #d7e6ef;
+        --brand: #35a7e0;
+        --brand-deep: #1b86c9;
+        --brand-soft: #e1f2fb;
+        --accent: #e8443a;
+        --ok: #1d9d63;
+        --warn-bg: #fff6e5;
+        --warn-ink: #8a5a00;
+        --shadow: 0 2px 10px rgba(27, 90, 130, .08);
+        --radius: 12px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d1a24;
+          --surface: #152635;
+          --surface-2: #1a2f42;
+          --ink: #e8f2f8;
+          --ink-2: #9db4c4;
+          --line: #274257;
+          --brand: #3fa9de;
+          --brand-deep: #63bdf0;
+          --brand-soft: #17344a;
+          --accent: #ff6a5e;
+          --ok: #3ecf8e;
+          --warn-bg: #3a2d10;
+          --warn-ink: #f0c569;
+          --shadow: 0 2px 10px rgba(0, 0, 0, .35);
+        }
+      }
+      * { box-sizing: border-box; }
+      [hidden] { display: none !important; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+        font-size: 15px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+      button { font: inherit; cursor: pointer; }
+      input { font: inherit; }
+      .wrap { max-width: 560px; margin: 0 auto; padding: 0 12px 90px; }
+
+      /* ---------- 公告条 ---------- */
+      .notice-bar {
+        background: var(--brand-soft);
+        border-bottom: 1px solid var(--line);
+        font-size: 12.5px;
+        color: var(--brand-deep);
+        padding: 6px 12px;
+        text-align: center;
+      }
+      .notice-bar b { color: var(--accent); font-weight: 600; }
+      .notice-bar .sep { margin: 0 6px; opacity: .5; }
+
+      /* ---------- 页眉 ---------- */
+      header.site {
+        position: sticky; top: 0; z-index: 30;
+        background: var(--brand);
+        color: #fff;
+        box-shadow: var(--shadow);
+      }
+      .header-in {
+        max-width: 560px; margin: 0 auto;
+        display: flex; align-items: center; gap: 10px;
+        padding: 10px 12px;
+      }
+      .logo { font-size: 20px; font-weight: 800; letter-spacing: 2px; line-height: 1; white-space: nowrap; }
+      .logo .flame { color: #ffd9d4; }
+      .demo-tag {
+        background: var(--accent); color: #fff;
+        font-size: 11px; font-weight: 700;
+        padding: 2px 7px; border-radius: 4px; letter-spacing: 1px;
+        white-space: nowrap;
+      }
+      .header-spacer { flex: 1; }
+      .icon-btn {
+        position: relative; background: transparent; border: 0; color: #fff;
+        width: 40px; height: 40px; display: grid; place-items: center;
+      }
+      .icon-btn svg { width: 26px; height: 26px; }
+      .cart-badge {
+        position: absolute; top: 2px; right: 0;
+        background: var(--accent); color: #fff;
+        font-size: 11px; font-weight: 700; line-height: 1;
+        min-width: 18px; height: 18px; border-radius: 9px;
+        display: grid; place-items: center; padding: 0 4px;
+      }
+      .cart-badge[hidden] { display: none; }
+      .user-chip {
+        font-size: 12px; color: #fff; opacity: .95;
+        max-width: 84px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      }
+
+      /* ---------- 通用 ---------- */
+      .view { display: none; }
+      .view.active { display: block; }
+      .card {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); box-shadow: var(--shadow);
+        padding: 14px; margin-top: 12px;
+      }
+      .card h2 { font-size: 17px; margin: 0 0 10px; }
+      .muted { color: var(--ink-2); font-size: 13px; }
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+        border: 0; border-radius: 10px; padding: 12px 18px;
+        font-size: 15px; font-weight: 600; text-decoration: none;
+        transition: opacity .15s ease;
+      }
+      .btn:active { opacity: .8; }
+      .btn-primary { background: var(--brand-deep); color: #fff; }
+      .btn-block { width: 100%; }
+      .btn-ghost { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
+      .btn-danger-ghost { background: transparent; color: var(--accent); border: 1px solid var(--line); }
+      .btn[disabled] { opacity: .45; cursor: not-allowed; }
+      .back-link {
+        display: inline-flex; align-items: center; gap: 4px;
+        background: none; border: 0; color: var(--brand-deep);
+        font-size: 14px; padding: 14px 0 0;
+      }
+      .field { margin-bottom: 12px; }
+      .field label { display: block; font-size: 13px; color: var(--ink-2); margin-bottom: 5px; }
+      .field input {
+        width: 100%; padding: 11px 12px; border: 1px solid var(--line);
+        border-radius: 9px; background: var(--surface); color: var(--ink);
+        outline: none;
+      }
+      .field input:focus { border-color: var(--brand); }
+      .hint { font-size: 12px; color: var(--ink-2); margin-top: 6px; }
+      .demo-note {
+        background: var(--warn-bg); color: var(--warn-ink);
+        border-radius: 9px; padding: 9px 12px; font-size: 12.5px; margin-top: 10px;
+      }
+
+      /* ---------- 分类 ---------- */
+      .cats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+      .cat {
+        border: 1px solid var(--line); background: var(--surface);
+        color: var(--ink); border-radius: 999px; padding: 7px 14px; font-size: 14px;
+      }
+      .cat.on { background: var(--brand-deep); border-color: var(--brand-deep); color: #fff; font-weight: 600; }
+
+      /* ---------- 商品 ---------- */
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+      @media (max-width: 360px) { .grid { grid-template-columns: 1fr; } }
+      .prod {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
+        display: flex; flex-direction: column;
+      }
+      .prod-art {
+        height: 92px; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 2px;
+        color: #fff; text-align: center; padding: 8px;
+      }
+      .prod-art .brand-name { font-size: 19px; font-weight: 800; letter-spacing: 3px; }
+      .prod-art .art-sub { font-size: 11px; opacity: .85; letter-spacing: 1px; }
+      .prod-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+      .prod-name { font-size: 14.5px; font-weight: 600; line-height: 1.4; }
+      .prod-spec { font-size: 12px; color: var(--ink-2); }
+      .limit-tag {
+        align-self: flex-start; font-size: 11px; color: var(--accent);
+        border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px; line-height: 1.7;
+      }
+      .prod-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; padding-top: 6px; }
+      .price { color: var(--accent); font-weight: 700; font-size: 16px; }
+      .price small { font-size: 11px; font-weight: 400; color: var(--ink-2); }
+      .add-btn {
+        background: var(--brand-deep); color: #fff; border: 0;
+        border-radius: 8px; padding: 7px 13px; font-size: 13.5px; font-weight: 600;
+      }
+
+      /* ---------- 购物车 ---------- */
+      .cart-line {
+        display: flex; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line);
+      }
+      .cart-line:last-child { border-bottom: 0; }
+      .thumb {
+        width: 52px; height: 52px; border-radius: 8px; flex: none;
+        display: grid; place-items: center; color: #fff;
+        font-weight: 800; font-size: 15px; letter-spacing: 1px;
+      }
+      .cart-main { flex: 1; min-width: 0; }
+      .cart-name { font-size: 14px; font-weight: 600; }
+      .cart-price { color: var(--accent); font-weight: 700; margin-top: 2px; }
+      .qty-ctl { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-top: 6px; }
+      .qty-ctl button { width: 30px; height: 30px; border: 0; background: var(--surface-2); color: var(--ink); font-size: 16px; }
+      .qty-ctl span { min-width: 34px; text-align: center; font-weight: 600; }
+      .del-btn { background: none; border: 0; color: var(--ink-2); font-size: 12.5px; padding: 4px 0; }
+      .empty { text-align: center; padding: 34px 10px; color: var(--ink-2); }
+      .total-row { display: flex; justify-content: space-between; align-items: baseline; padding-top: 12px; }
+      .total-row .amt { color: var(--accent); font-size: 20px; font-weight: 800; }
+
+      /* ---------- 费用拆分 ---------- */
+      .fee-table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+      .fee-table td { padding: 7px 0; border-bottom: 1px dashed var(--line); }
+      .fee-table td:last-child { text-align: right; font-weight: 600; white-space: nowrap; }
+      .fee-table tr.grand td { border-bottom: 0; border-top: 2px solid var(--line); padding-top: 10px; font-size: 16px; }
+      .fee-table tr.grand td:last-child { color: var(--accent); font-weight: 800; }
+
+      /* ---------- 登录 ---------- */
+      .code-row { display: flex; gap: 8px; }
+      .code-row input { flex: 1; }
+      .code-row .btn { flex: none; padding: 11px 14px; font-size: 14px; }
+
+      /* ---------- 支付 ---------- */
+      .pay-head {
+        background: var(--brand); color: #fff; border-radius: var(--radius) var(--radius) 0 0;
+        margin: -14px -14px 14px; padding: 13px 14px; font-size: 17px; font-weight: 700;
+      }
+      .unionpay-btn {
+        width: 100%; background: #0b5fff; color: #fff; border: 0;
+        border-radius: 10px; padding: 16px; font-size: 19px; font-weight: 700; letter-spacing: 4px;
+      }
+      .unionpay-btn:active { opacity: .85; }
+      .pay-tips {
+        background: var(--brand-soft); border-radius: 10px; padding: 12px 14px;
+        margin-top: 14px; font-size: 14px; color: var(--brand-deep);
+      }
+      .pay-tips li { margin: 5px 0; }
+      .countdown {
+        text-align: center; padding: 8px 0 2px;
+      }
+      .countdown .clock {
+        font-size: 46px; font-weight: 800; font-variant-numeric: tabular-nums;
+        color: var(--brand-deep); letter-spacing: 2px;
+      }
+      .countdown.expired .clock { color: var(--accent); }
+      .link-box {
+        background: var(--surface-2); border: 1px dashed var(--line); border-radius: 9px;
+        padding: 10px 12px; font-size: 12px; color: var(--ink-2);
+        word-break: break-all; margin-top: 10px;
+      }
+      .status-badge {
+        display: inline-block; border-radius: 999px; padding: 3px 12px;
+        font-size: 13px; font-weight: 600;
+      }
+      .status-ok { background: #e4f7ee; color: var(--ok); }
+      .status-wait { background: var(--brand-soft); color: var(--brand-deep); }
+      .status-closed { background: #fdecea; color: var(--accent); }
+      @media (prefers-color-scheme: dark) {
+        .status-ok { background: #123527; }
+        .status-closed { background: #3d1a17; }
+      }
+      .result-icon { text-align: center; font-size: 44px; line-height: 1.2; }
+      .order-no { font-size: 18px; font-weight: 800; text-align: center; letter-spacing: 1px; }
+
+      footer.site {
+        max-width: 560px; margin: 26px auto 0; padding: 0 12px;
+        color: var(--ink-2); font-size: 12.5px; line-height: 1.7;
+      }
+      footer.site h3 { color: var(--ink); font-size: 15px; margin: 0 0 6px; }
+
+      /* ---------- 年龄确认 ---------- */
+      .age-gate {
+        position: fixed; inset: 0; z-index: 100;
+        background: rgba(10, 30, 45, .62);
+        display: grid; place-items: center; padding: 20px;
+      }
+      .age-gate[hidden] { display: none; }
+      .age-box {
+        background: var(--surface); color: var(--ink);
+        border-radius: 16px; padding: 26px 22px; max-width: 400px; width: 100%;
+        text-align: center; box-shadow: 0 12px 40px rgba(0,0,0,.3);
+      }
+      .age-box h2 { margin: 0 0 8px; font-size: 20px; }
+      .age-box p { color: var(--ink-2); font-size: 14px; margin: 0 0 18px; }
+      .age-box .btn { margin-top: 8px; }
+
+      /* ---------- Toast ---------- */
+      .toast {
+        position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px);
+        background: rgba(20, 40, 55, .94); color: #fff;
+        padding: 10px 18px; border-radius: 999px; font-size: 14px;
+        opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease;
+        z-index: 90; max-width: 88vw; text-align: center;
+      }
+      .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+      /* ---------- 底部结算条 ---------- */
+      .sticky-bar {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+        background: var(--surface); border-top: 1px solid var(--line);
+        padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+        display: none;
+      }
+      .sticky-bar.show { display: block; }
+      .sticky-in { max-width: 560px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+      .sticky-in .sum { flex: 1; }
+      .sticky-in .sum .amt { color: var(--accent); font-size: 19px; font-weight: 800; }
+    </style>
+  </head>
+  <body>
+
+    <!-- 年龄确认 -->
+    <div class="age-gate" id="ageGate">
+      <div class="age-box">
+        <h2>年龄确认</h2>
+        <p>本店（演示版）展示烟草及相关商品。按照相关规定，未满 20 周岁者不得进入、不得购买烟草制品。</p>
+        <p style="font-weight:600;color:var(--ink)">请确认您已年满 20 周岁</p>
+        <button class="btn btn-primary btn-block" id="ageYes">我已满 20 岁，进入店铺</button>
+        <button class="btn btn-ghost btn-block" id="ageNo">未满 20 岁</button>
+        <p class="hint" id="ageMsg" hidden>未满 20 周岁无法进入本店，感谢理解。</p>
+      </div>
+    </div>
+
+    <!-- 公告条 -->
+    <div class="notice-bar">
+      EMS B队列已受理至<b>24日19点</b><span class="sep">|</span>EMS A队列已受理至<b>24日13点</b><span class="sep">|</span>全站为功能演示，不产生真实订单
+    </div>
+
+    <!-- 页眉 -->
+    <header class="site">
+      <div class="header-in">
+        <div class="logo"><span class="flame">HZ</span> 花泽小店</div>
+        <span class="demo-tag">演示版</span>
+        <div class="header-spacer"></div>
+        <span class="user-chip" id="userChip" hidden></span>
+        <button class="icon-btn" id="cartBtn" aria-label="购物车">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2.5 3h2l2.6 12.4a1.6 1.6 0 0 0 1.6 1.3h9.9a1.6 1.6 0 0 0 1.6-1.3L21.5 7H6"/></svg>
+          <span class="cart-badge" id="cartBadge" hidden>0</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="wrap">
+
+      <!-- ======== 店铺 ======== -->
+      <section class="view active" id="view-shop">
+        <div class="cats" id="cats"></div>
+        <div class="grid" id="grid"></div>
+        <div class="demo-note">演示版说明：商品图为文字色块占位，不使用真实商标图片；价格、费用与队列进度均为演示数据。</div>
+      </section>
+
+      <!-- ======== 购物车 ======== -->
+      <section class="view" id="view-cart">
+        <button class="back-link" data-goto="shop">‹ 继续购物</button>
+        <div class="card">
+          <h2>购物车</h2>
+          <div id="cartLines"></div>
+          <div class="empty" id="cartEmpty">购物车还是空的，去逛逛吧。</div>
+          <div id="cartFoot">
+            <div class="total-row"><span>商品合计</span><span class="amt" id="cartTotal">¥0</span></div>
+            <p class="muted">服务费与 EMS 运费将在结算页拆分展示。</p>
+            <button class="btn btn-primary btn-block" id="toCheckout">去结算</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== 登录 ======== -->
+      <section class="view" id="view-login">
+        <button class="back-link" data-goto="cart">‹ 返回购物车</button>
+        <div class="card">
+          <h2>登录 / 注册</h2>
+          <p class="muted">结算前需要先登录。本店采用邮箱验证码登录，无需密码。</p>
+          <div class="field" style="margin-top:12px">
+            <label for="loginEmail">邮箱地址</label>
+            <input id="loginEmail" type="email" inputmode="email" placeholder="例如 jiannanjiang021@gmail.com" autocomplete="email" />
+          </div>
+          <div class="field">
+            <label for="loginCode">邮件验证码（6 位数字）</label>
+            <div class="code-row">
+              <input id="loginCode" type="text" inputmode="numeric" maxlength="6" placeholder="输入 6 位验证码" autocomplete="one-time-code" />
+              <button class="btn btn-ghost" id="sendCode">获取验证码</button>
+            </div>
+            <p class="hint">演示版提示：不会真的发送邮件，任意 6 位数字验证码均可通过。</p>
+          </div>
+          <button class="btn btn-primary btn-block" id="doLogin">登录并继续结算</button>
+        </div>
+      </section>
+
+      <!-- ======== 结算 ======== -->
+      <section class="view" id="view-checkout">
+        <button class="back-link" data-goto="cart">‹ 返回购物车</button>
+        <div class="card">
+          <h2>收货信息</h2>
+          <div class="field">
+            <label for="coName">收货人姓名</label>
+            <input id="coName" type="text" placeholder="请输入收货人姓名" autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for="coPhone">手机号</label>
+            <input id="coPhone" type="tel" inputmode="tel" placeholder="请输入中国大陆手机号" autocomplete="tel" />
+          </div>
+          <div class="field">
+            <label for="coAddr">收货地址（中国）</label>
+            <input id="coAddr" type="text" placeholder="省 / 市 / 区 + 详细地址" autocomplete="street-address" />
+          </div>
+          <p class="hint">演示版：以上信息仅在本页内使用，不会上传或保存。</p>
+        </div>
+        <div class="card">
+          <h2>订单明细</h2>
+          <div id="coLines" class="muted" style="margin-bottom:8px"></div>
+          <table class="fee-table">
+            <tr><td>商品金额</td><td id="feeGoods">¥0</td></tr>
+            <tr><td>服务费 <span class="muted" id="feeServiceNote"></span></td><td id="feeService">¥0</td></tr>
+            <tr><td>EMS 运费</td><td id="feeShip">¥0</td></tr>
+            <tr class="grand"><td>总计（日元）</td><td id="feeTotal">¥0</td></tr>
+          </table>
+          <button class="btn btn-primary btn-block" id="toPay" style="margin-top:14px">提交订单并选择支付方式</button>
+        </div>
+      </section>
+
+      <!-- ======== 支付方式 ======== -->
+      <section class="view" id="view-pay">
+        <button class="back-link" data-goto="checkout">‹ 返回结算</button>
+        <div class="card">
+          <div class="pay-head">选择支付方式</div>
+          <p style="text-align:center" class="muted">国际支付请求较慢，点击后请耐心等待数秒</p>
+          <p style="text-align:center;margin:4px 0 12px">订单金额 <b style="color:var(--accent);font-size:19px" id="payAmount">¥0</b>（日元）</p>
+          <button class="unionpay-btn" id="unionpayBtn">银联支付</button>
+          <p style="margin-top:14px">建议提前<b>安装</b>银联支付所需要的“云闪付”APP、APP<b>绑定</b>带有“银联”标志银行卡、<b>确认</b>银行卡未设置网购限额或限额足够高、<b>确认</b>银行卡未被关闭国际支付。</p>
+          <div class="pay-tips">
+            <ul style="margin:0;padding-left:18px">
+              <li>即将前往的支付页面有效期 5 分钟</li>
+              <li>若超时请在本页重新获取支付链接</li>
+              <li>多次超时订单将自动关闭</li>
+            </ul>
+          </div>
+          <div class="demo-note">演示版：点击“银联支付”不会跳转真实收银台，只在本页内模拟生成一条 5 分钟有效的支付链接。</div>
+        </div>
+      </section>
+
+      <!-- ======== 支付链接 / 结果 ======== -->
+      <section class="view" id="view-paylink">
+        <div class="card" id="paylinkCard">
+          <div class="pay-head">银联支付 · 支付链接</div>
+          <div class="countdown" id="countdownBox">
+            <div class="muted">支付链接剩余有效时间</div>
+            <div class="clock" id="clock">05:00</div>
+            <div class="muted" id="timeoutInfo"></div>
+          </div>
+          <div class="link-box" id="linkBox"></div>
+          <div id="paylinkActions" style="margin-top:16px">
+            <button class="btn btn-primary btn-block" id="paidBtn">我已完成支付</button>
+            <button class="btn btn-ghost btn-block" id="regenBtn" style="margin-top:10px" hidden>重新获取支付链接</button>
+            <button class="btn btn-danger-ghost btn-block" id="cancelOrderBtn" style="margin-top:10px">取消订单</button>
+          </div>
+        </div>
+
+        <div class="card" id="paySuccessCard" hidden>
+          <div class="result-icon" style="color:var(--ok)">✓</div>
+          <h2 style="text-align:center">支付成功（模拟）</h2>
+          <div class="order-no" id="orderNo"></div>
+          <p style="text-align:center;margin-top:10px"><span class="status-badge status-wait" id="orderStatus">已进入 EMS B队列待受理</span></p>
+          <table class="fee-table" style="margin-top:12px">
+            <tr><td>订单金额</td><td id="successAmount">¥0</td></tr>
+            <tr><td>收货人</td><td id="successName">—</td></tr>
+            <tr><td>队列进度参考</td><td>EMS B队列已受理至 24日19点</td></tr>
+          </table>
+          <p class="muted" style="margin-top:10px">后续流程（演示）：队列受理 → 店铺打包 → EMS 发出 → 到达中国海关后由收件人在海关 App 自行缴税 → 派送。</p>
+          <button class="btn btn-primary btn-block" id="backShopBtn" style="margin-top:12px">返回店铺继续逛逛</button>
+        </div>
+
+        <div class="card" id="payClosedCard" hidden>
+          <div class="result-icon" style="color:var(--accent)">✕</div>
+          <h2 style="text-align:center">订单已自动关闭</h2>
+          <p style="text-align:center"><span class="status-badge status-closed">已关闭</span></p>
+          <p class="muted" style="margin-top:10px;text-align:center">支付链接多次超时，本订单已按规则自动关闭，购物车商品已保留，可重新下单。</p>
+          <button class="btn btn-primary btn-block" id="closedBackBtn" style="margin-top:12px">返回购物车重新下单</button>
+        </div>
+      </section>
+
+      <footer class="site">
+        <h3>关于下单与发货（演示文案）</h3>
+        <p>EMS 下单后区分 A、B 两个队列，按受理顺序打包发货；队列进度见页面顶部公告条。包裹到达中国后产生的税费由收件人自行在海关 App 缴纳，邮寄烟草制品请遵守海关关于个人邮寄物品的数量限制。</p>
+        <p>本站为功能演示版：不接入真实支付、不收集真实个人信息、不产生真实订单与物流。</p>
+      </footer>
+    </div>
+
+    <!-- 底部结算条（店铺视图） -->
+    <div class="sticky-bar" id="stickyBar">
+      <div class="sticky-in">
+        <div class="sum"><span class="muted">合计</span> <span class="amt" id="stickyAmt">¥0</span></div>
+        <button class="btn btn-primary" id="stickyCart">查看购物车</button>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      "use strict";
+      /* ================= 数据（演示） ================= */
+      var CATS = ["全部", "日本香烟", "外国香烟", "加热烟草", "手卷烟丝", "用具耗材"];
+      var PRODUCTS = [
+        { id: "seven14",  cat: "日本香烟", name: "七星 14mg 软包",        spec: "碳滤软盒 · 20支/包",        price: 600, limit: 2, art: ["七星", "SEVEN STARS · 14mg"], color: "#274b73" },
+        { id: "seven10",  cat: "日本香烟", name: "七星 10mg",             spec: "硬盒 · 20支/包",            price: 600, limit: 0, art: ["七星", "SEVEN STARS · 10mg"], color: "#3a6ea8" },
+        { id: "mevius10", cat: "日本香烟", name: "梅比乌斯 10mg",         spec: "硬盒 · 20支/包",            price: 580, limit: 0, art: ["梅比乌斯", "MEVIUS · 10mg"],      color: "#7a4b8f" },
+        { id: "camel",    cat: "外国香烟", name: "骆驼 Craft 12mg",       spec: "硬盒 · 20支/包",            price: 450, limit: 0, art: ["骆驼", "CAMEL CRAFT · 12mg"],   color: "#b07a2e" },
+        { id: "marlboro", cat: "外国香烟", name: "万宝路 12mg",           spec: "硬盒 · 20支/包",            price: 620, limit: 0, art: ["万宝路", "MARLBORO · 12mg"],    color: "#a8322a" },
+        { id: "capitaine",cat: "外国香烟", name: "卡比龙",                spec: "总统版 · 20支/包",          price: 750, limit: 2, art: ["卡比龙", "CAPITAINE"],          color: "#54575e" },
+        { id: "terea",    cat: "加热烟草", name: "TEREA 烟弹（IQOS ILUMA 专用）", spec: "20支/盒 · 多种口味", price: 640, limit: 0, art: ["TEREA", "FOR IQOS ILUMA"],      color: "#2e7d6e" },
+        { id: "captain",  cat: "手卷烟丝", name: "老船长烟丝 30g",        spec: "手卷烟丝 · 30g/袋",         price: 840, limit: 0, art: ["老船长", "HAND ROLLING · 30g"], color: "#5d4037" },
+        { id: "filter",   cat: "用具耗材", name: "活性炭滤嘴",            spec: "9mm · 100支/盒",           price: 440, limit: 0, art: ["滤嘴", "ACTIVATED CARBON"],   color: "#607d8b" }
+      ];
+      var SERVICE_PER_PACK = 100;     /* 每包服务费（演示规则） */
+      var SERVICE_FREE_QTY = 10;      /* 单品满 10 包（整条）该品免服务费 */
+      var SHIP_FEE = 1800;            /* EMS 运费（演示） */
+      var LINK_SECONDS = 300;         /* 支付链接有效期 5 分钟 */
+      var MAX_TIMEOUTS = 3;           /* 超时 3 次订单自动关闭 */
+
+      /* ================= 状态 ================= */
+      var cart = {};                  /* id -> qty */
+      var loggedInEmail = "";
+      var currentCat = "全部";
+      var order = null;               /* {no, total, name, timeouts, timerId, remain, state} */
+      var pendingGotoCheckout = false;
+
+      function $(id) { return document.getElementById(id); }
+      function yen(n) { return "¥" + n.toLocaleString("ja-JP"); }
+      function prod(id) { for (var i = 0; i < PRODUCTS.length; i++) if (PRODUCTS[i].id === id) return PRODUCTS[i]; return null; }
+      function cartCount() { var s = 0; for (var k in cart) s += cart[k]; return s; }
+      function cartGoodsTotal() { var s = 0; for (var k in cart) s += prod(k).price * cart[k]; return s; }
+      function serviceFee() {
+        var s = 0;
+        for (var k in cart) { var p = prod(k); if (cart[k] < SERVICE_FREE_QTY) s += SERVICE_PER_PACK * cart[k]; }
+        return s;
+      }
+      function fees() {
+        var g = cartGoodsTotal(), s = serviceFee(), ship = cartCount() > 0 ? SHIP_FEE : 0;
+        return { goods: g, service: s, ship: ship, total: g + s + ship };
+      }
+
+      var toastTimer = null;
+      function toast(msg) {
+        var t = $("toast"); t.textContent = msg; t.classList.add("show");
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2200);
+      }
+
+      /* ================= 视图切换 ================= */
+      function show(view) {
+        var views = ["shop", "cart", "login", "checkout", "pay", "paylink"];
+        for (var i = 0; i < views.length; i++)
+          $("view-" + views[i]).classList.toggle("active", views[i] === view);
+        $("stickyBar").classList.toggle("show", view === "shop" && cartCount() > 0);
+        window.scrollTo(0, 0);
+      }
+
+      /* ================= 年龄确认 ================= */
+      $("ageYes").addEventListener("click", function () { $("ageGate").hidden = true; });
+      $("ageNo").addEventListener("click", function () { $("ageMsg").hidden = false; });
+
+      /* ================= 商品列表 ================= */
+      function renderCats() {
+        var box = $("cats"); box.innerHTML = "";
+        CATS.forEach(function (c) {
+          var b = document.createElement("button");
+          b.className = "cat" + (c === currentCat ? " on" : "");
+          b.textContent = c;
+          b.addEventListener("click", function () { currentCat = c; renderCats(); renderGrid(); });
+          box.appendChild(b);
+        });
+      }
+      function renderGrid() {
+        var g = $("grid"); g.innerHTML = "";
+        PRODUCTS.filter(function (p) { return currentCat === "全部" || p.cat === currentCat; })
+        .forEach(function (p) {
+          var card = document.createElement("div"); card.className = "prod";
+          var art = document.createElement("div"); art.className = "prod-art"; art.style.background = p.color;
+          art.innerHTML = "";
+          var bn = document.createElement("div"); bn.className = "brand-name"; bn.textContent = p.art[0];
+          var as = document.createElement("div"); as.className = "art-sub"; as.textContent = p.art[1];
+          art.appendChild(bn); art.appendChild(as);
+          var body = document.createElement("div"); body.className = "prod-body";
+          var nm = document.createElement("div"); nm.className = "prod-name"; nm.textContent = p.name;
+          var sp = document.createElement("div"); sp.className = "prod-spec"; sp.textContent = p.spec;
+          body.appendChild(nm); body.appendChild(sp);
+          if (p.limit > 0) {
+            var lt = document.createElement("span"); lt.className = "limit-tag"; lt.textContent = "限购 " + p.limit + " 包";
+            body.appendChild(lt);
+          }
+          var foot = document.createElement("div"); foot.className = "prod-foot";
+          var pr = document.createElement("span"); pr.className = "price"; pr.innerHTML = yen(p.price) + " <small>/包</small>";
+          var add = document.createElement("button"); add.className = "add-btn"; add.textContent = "加入购物车";
+          add.addEventListener("click", function () { addToCart(p.id); });
+          foot.appendChild(pr); foot.appendChild(add);
+          body.appendChild(foot);
+          card.appendChild(art); card.appendChild(body);
+          g.appendChild(card);
+        });
+      }
+      function addToCart(id) {
+        var p = prod(id), cur = cart[id] || 0;
+        if (p.limit > 0 && cur >= p.limit) { toast("「" + p.name + "」限购 " + p.limit + " 包，已达上限"); return; }
+        cart[id] = cur + 1;
+        syncCartUI();
+        toast("已加入购物车：" + p.name);
+      }
+
+      /* ================= 购物车 ================= */
+      function syncCartUI() {
+        var n = cartCount();
+        $("cartBadge").hidden = n === 0;
+        $("cartBadge").textContent = n;
+        $("stickyAmt").textContent = yen(cartGoodsTotal());
+        if ($("view-shop").classList.contains("active"))
+          $("stickyBar").classList.toggle("show", n > 0);
+        renderCart();
+      }
+      function renderCart() {
+        var box = $("cartLines"); box.innerHTML = "";
+        var ids = Object.keys(cart);
+        $("cartEmpty").style.display = ids.length ? "none" : "block";
+        $("cartFoot").style.display = ids.length ? "block" : "none";
+        ids.forEach(function (id) {
+          var p = prod(id), q = cart[id];
+          var line = document.createElement("div"); line.className = "cart-line";
+          var th = document.createElement("div"); th.className = "thumb"; th.style.background = p.color; th.textContent = p.art[0].slice(0, 2);
+          var main = document.createElement("div"); main.className = "cart-main";
+          var nm = document.createElement("div"); nm.className = "cart-name";
+          nm.textContent = p.name + (p.limit > 0 ? "（限购 " + p.limit + " 包）" : "");
+          var pr = document.createElement("div"); pr.className = "cart-price"; pr.textContent = yen(p.price) + " × " + q + " = " + yen(p.price * q);
+          var ctl = document.createElement("div"); ctl.className = "qty-ctl";
+          var minus = document.createElement("button"); minus.textContent = "−"; minus.setAttribute("aria-label", "减少");
+          var span = document.createElement("span"); span.textContent = q;
+          var plus = document.createElement("button"); plus.textContent = "+"; plus.setAttribute("aria-label", "增加");
+          minus.addEventListener("click", function () { changeQty(id, -1); });
+          plus.addEventListener("click", function () { changeQty(id, 1); });
+          ctl.appendChild(minus); ctl.appendChild(span); ctl.appendChild(plus);
+          var del = document.createElement("button"); del.className = "del-btn"; del.textContent = "删除";
+          del.addEventListener("click", function () { delete cart[id]; syncCartUI(); });
+          main.appendChild(nm); main.appendChild(pr); main.appendChild(ctl); main.appendChild(document.createElement("br")); main.appendChild(del);
+          line.appendChild(th); line.appendChild(main);
+          box.appendChild(line);
+        });
+        $("cartTotal").textContent = yen(cartGoodsTotal());
+      }
+      function changeQty(id, d) {
+        var p = prod(id), q = (cart[id] || 0) + d;
+        if (q <= 0) { delete cart[id]; syncCartUI(); return; }
+        if (p.limit > 0 && q > p.limit) { toast("「" + p.name + "」限购 " + p.limit + " 包"); return; }
+        cart[id] = q; syncCartUI();
+      }
+
+      /* ================= 导航 ================= */
+      $("cartBtn").addEventListener("click", function () { show("cart"); });
+      $("stickyCart").addEventListener("click", function () { show("cart"); });
+      document.querySelectorAll("[data-goto]").forEach(function (el) {
+        el.addEventListener("click", function () { show(el.getAttribute("data-goto")); });
+      });
+
+      /* ================= 登录 ================= */
+      $("toCheckout").addEventListener("click", function () {
+        if (cartCount() === 0) { toast("购物车是空的"); return; }
+        if (!loggedInEmail) { pendingGotoCheckout = true; show("login"); }
+        else { renderCheckout(); show("checkout"); }
+      });
+      var codeCooldown = 0, codeTimer = null;
+      $("sendCode").addEventListener("click", function () {
+        var email = $("loginEmail").value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast("请先填写正确的邮箱地址"); return; }
+        if (codeCooldown > 0) return;
+        codeCooldown = 60;
+        var btn = $("sendCode"); btn.disabled = true; btn.textContent = "已发送（" + codeCooldown + "s）";
+        toast("演示版：验证码未真实发送，输入任意 6 位数字即可");
+        codeTimer = setInterval(function () {
+          codeCooldown--;
+          if (codeCooldown <= 0) { clearInterval(codeTimer); btn.disabled = false; btn.textContent = "获取验证码"; }
+          else btn.textContent = "已发送（" + codeCooldown + "s）";
+        }, 1000);
+      });
+      $("doLogin").addEventListener("click", function () {
+        var email = $("loginEmail").value.trim();
+        var code = $("loginCode").value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast("请填写正确的邮箱地址"); return; }
+        if (!/^\d{6}$/.test(code)) { toast("请输入 6 位数字验证码"); return; }
+        loggedInEmail = email;
+        var chip = $("userChip"); chip.hidden = false; chip.textContent = email;
+        toast("登录成功（演示）");
+        if (pendingGotoCheckout) { pendingGotoCheckout = false; renderCheckout(); show("checkout"); }
+        else show("shop");
+      });
+
+      /* ================= 结算 ================= */
+      function renderCheckout() {
+        var f = fees();
+        var lines = Object.keys(cart).map(function (id) {
+          var p = prod(id); return p.name + " × " + cart[id];
+        }).join("；");
+        $("coLines").textContent = lines;
+        $("feeGoods").textContent = yen(f.goods);
+        $("feeService").textContent = yen(f.service);
+        $("feeServiceNote").textContent = "（每包 " + yen(SERVICE_PER_PACK) + "，单品满 " + SERVICE_FREE_QTY + " 包免该品服务费）";
+        $("feeShip").textContent = yen(f.ship);
+        $("feeTotal").textContent = yen(f.total);
+      }
+      $("toPay").addEventListener("click", function () {
+        if (!$("coName").value.trim()) { toast("请填写收货人姓名"); return; }
+        if (!/^1\d{10}$/.test($("coPhone").value.trim())) { toast("请填写 11 位中国大陆手机号（演示校验）"); return; }
+        if ($("coAddr").value.trim().length < 6) { toast("请填写完整的收货地址"); return; }
+        var f = fees();
+        order = {
+          no: "DEMO" + String(Date.now()).slice(-10),
+          total: f.total, name: $("coName").value.trim(),
+          timeouts: 0, state: "created", timerId: null, remain: 0
+        };
+        $("payAmount").textContent = yen(f.total);
+        show("pay");
+      });
+
+      /* ================= 支付链接模拟 ================= */
+      function fmtClock(s) {
+        var m = Math.floor(s / 60), r = s % 60;
+        return (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r;
+      }
+      function stopTimer() { if (order && order.timerId) { clearInterval(order.timerId); order.timerId = null; } }
+      function startLink() {
+        stopTimer();
+        order.remain = LINK_SECONDS;
+        order.state = "link";
+        var token = Math.random().toString(36).slice(2, 10).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();
+        $("linkBox").textContent = "支付链接（演示生成）：https://pay.example.invalid/unionpay/session/" + token + "?order=" + order.no + " —— 真实网关会返回带签名的会话链接，金额与订单号在服务端锁定。";
+        $("paylinkCard").hidden = false;
+        $("paySuccessCard").hidden = true;
+        $("payClosedCard").hidden = true;
+        $("countdownBox").classList.remove("expired");
+        $("paidBtn").hidden = false;
+        $("regenBtn").hidden = true;
+        $("cancelOrderBtn").hidden = false;
+        updateClock();
+        order.timerId = setInterval(function () {
+          order.remain--;
+          if (order.remain <= 0) { onLinkTimeout(); return; }
+          updateClock();
+        }, 1000);
+        updateTimeoutInfo();
+      }
+      function updateClock() { $("clock").textContent = fmtClock(Math.max(0, order.remain)); }
+      function updateTimeoutInfo(extra) {
+        var s = "订单号 " + order.no + " · 已超时 " + order.timeouts + " 次（累计 " + MAX_TIMEOUTS + " 次超时订单自动关闭）";
+        $("timeoutInfo").textContent = extra ? extra : s;
+      }
+      function onLinkTimeout() {
+        stopTimer();
+        order.timeouts++;
+        order.state = "expired";
+        if (order.timeouts >= MAX_TIMEOUTS) { closeOrder(); return; }
+        $("countdownBox").classList.add("expired");
+        $("clock").textContent = "已超时";
+        $("paidBtn").hidden = true;
+        $("regenBtn").hidden = false;
+        updateTimeoutInfo("链接已超时，请重新获取支付链接。订单号 " + order.no + " · 已超时 " + order.timeouts + " 次，再超时 " + (MAX_TIMEOUTS - order.timeouts) + " 次订单将自动关闭。");
+      }
+      function closeOrder() {
+        order.state = "closed";
+        $("paylinkCard").hidden = true;
+        $("paySuccessCard").hidden = true;
+        $("payClosedCard").hidden = false;
+      }
+      $("unionpayBtn").addEventListener("click", function () {
+        if (!order) return;
+        show("paylink");
+        startLink();
+        toast("正在生成支付链接（演示）…");
+      });
+      $("regenBtn").addEventListener("click", function () { startLink(); toast("已生成新的支付链接，有效期 5 分钟"); });
+      $("paidBtn").addEventListener("click", function () {
+        if (!order || order.state !== "link") return;
+        stopTimer();
+        order.state = "paid";
+        $("paylinkCard").hidden = true;
+        $("payClosedCard").hidden = true;
+        $("paySuccessCard").hidden = false;
+        $("orderNo").textContent = "订单号 " + order.no;
+        $("orderStatus").textContent = "已进入 EMS B队列待受理";
+        $("successAmount").textContent = yen(order.total) + "（日元）";
+        $("successName").textContent = order.name;
+        cart = {}; syncCartUI();
+      });
+      $("cancelOrderBtn").addEventListener("click", function () {
+        stopTimer();
+        if (order) order.state = "cancelled";
+        toast("订单已取消（演示），购物车商品已保留");
+        show("cart");
+      });
+      $("backShopBtn").addEventListener("click", function () { show("shop"); });
+      $("closedBackBtn").addEventListener("click", function () { show("cart"); });
+
+      /* ================= 初始化 ================= */
+      renderCats();
+      renderGrid();
+      syncCartUI();
+    </script>
+  </body>
+</html>
